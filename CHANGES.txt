@@ -1,1 +1,3 @@
+v0.0.2, 2013-07-08 -- Logger for Python implemented. You can now set your apikey, threshold, and timeout for sending logs to oohlalog.
+
 v0.0.1, 2013-02-18 -- Initial release.
