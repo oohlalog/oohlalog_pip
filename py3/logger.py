@@ -1,5 +1,5 @@
 import logging
-import httplib
+import urllib.request
 import json
 import time
 import threading
@@ -36,12 +36,11 @@ class OohLaLogHandler(logging.Handler):
 		headers = {}
 		headers['Content-Type'] = 'application/json'
 		body = json.dumps({'logs':self.logs})
+		body = body.encode('utf-8')
 		del self.logs[:]
-		conn = httplib.HTTPConnection('api.oohlalog.com',80)
-		conn.request('POST','/api/logging/save.json?apiKey=' + self.apiKey,body,headers)
-		response = conn.getresponse()
-		conn.close()
+		conn = urllib.request.Request('http://api.oohlalog.com/api/logging/save.json?apiKey=' + self.apiKey)
+		conn.add_header('Content-Type','application/json')
+		urllib.request.urlopen(conn,body)
 	def kill(self):
 		if self.checkerThread != None:
 			self.checkerThread.cancel()
-
