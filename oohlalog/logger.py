@@ -37,7 +37,7 @@ class OohLaLogHandler(logging.Handler):
 		headers['Content-Type'] = 'application/json'
 		body = json.dumps({'logs':self.logs})
 		del self.logs[:]
-		conn = httplib.HTTPConnection('oohlalog.com',80)
+		conn = httplib.HTTPConnection('api.oohlalog.com',80)
 		conn.request('POST','/api/logging/save.json?apiKey=' + self.apiKey,body,headers)
 		response = conn.getresponse()
 		conn.close()
