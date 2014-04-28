@@ -1,8 +1,6 @@
 Oohlalog Python Plugin
 ======================
 
-**IN ACTIVE DEVELOPMENT**
-
 
 OohLaLogHandler(apiKey, threshold=100, timeout=5, formatter=None)
 
