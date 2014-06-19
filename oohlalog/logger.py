@@ -23,23 +23,23 @@ class OohLaLogHandler(logging.Handler):
 			self.formatter = logging.Formatter('An error occured in module %(module)s:%(funcName)s at line %(lineno)d with the message "%(message)s"')
 		else:
 			self.formatter = formatter
-		
+
 		self.logs = []
 	def emit(self,record):
 		#append a new log dictionary to the list
-		self.logs.append({'message':record.msg,'level':record.levelname,'timestamp':int(time.time()*1000),'details':self.formatter.format(record),'category':record.levelname,'hostName':socket.gethostname()});
+		self.logs.append({'message':record.msg,'level':record.levelname,'timestamp':int(time.time()*1000),'details':self.formatter.format(record),'category':record.levelname,'hostName':socket.gethostname(), 'agent':'py'});
 		self.flush()
 	def flush(self,force=False):
 		with self.threadLock:
 			if len(self.logs) >= self.threshold or force and len(self.logs) > 0:
-				#start a thread to send off our data				
+				#start a thread to send off our data
 				if self.runningThreads > self.maxThreads:
 					self.threshold = self.threshold * 10 #increase threshold by order of magnitude
 				else:
                                         #Ok to start a new thread to dump things out so that we don't fork bomb the system under load
 					self.runningThreads += 1
 					threading.Thread(target=self.sendToOll,args=[self.logs]).start()
-					self.logs = [] #Re-assign logs because we have started a sending thread if we rely on self.logs in the sending thread and another thread starts we may send duplicate data 
+					self.logs = [] #Re-assign logs because we have started a sending thread if we rely on self.logs in the sending thread and another thread starts we may send duplicate data
 				#checker thread is set to none so we can check again
 				self.checkerThread = None
 			elif force != True and len(self.logs) > 0 and self.checkerThread is None:
@@ -63,4 +63,3 @@ class OohLaLogHandler(logging.Handler):
 	def kill(self):
 		if self.checkerThread != None:
 			self.checkerThread.cancel()
-
